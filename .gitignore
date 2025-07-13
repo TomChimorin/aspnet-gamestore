@@ -1,0 +1,9 @@
+# Ignore build outputs
+bin/
+obj/
+
+# VS Code workspace settings folder
+.vscode/
+
+# Secret or local config files
+secrets.json
