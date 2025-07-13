@@ -31,6 +31,9 @@ This project was built following Julio Casal's **ASP.NET Core Full Course For Be
 ---
 
 <details>
+<summary><strong>Concepts Learned</strong></summary>
+
+<details>
 <summary><strong>REST API</strong></summary>
 
 <!-- Add your REST API description, examples, images -->
@@ -134,3 +137,6 @@ This project was built following Julio Casal's **ASP.NET Core Full Course For Be
 <!-- Add frontend API integration details -->
 
 </details>
+
+</details>
+
