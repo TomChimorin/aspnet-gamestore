@@ -12,6 +12,17 @@ This project was built following Julio Casal's **ASP.NET Core Full Course For Be
 
 <details>
 <summary><strong>Features</strong></summary>
+  
+- Full CRUD operations on games  
+- Each game entity includes:  
+  - Unique ID  
+  - Name  
+  - Genre ID and associated Genre  
+  - Price  
+  - Release Date  
+- Genre management  
+- SQLite database backend  
+- RESTful API design  
 
 <!-- Add your features description here -->
 
