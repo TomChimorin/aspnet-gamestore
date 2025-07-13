@@ -134,9 +134,29 @@ This project was built following Julio Casal's **ASP.NET Core Full Course For Be
 <details>
 <summary><strong>API Integration with Frontend</strong></summary>
 
+
+
 <!-- Add frontend API integration details -->
 
 </details>
 
 </details>
 
+
+## Installation
+
+1. **Clone the repository:**
+
+```bash
+git clone https://github.com/TomChimorin/aspnet-gamestore.git
+```
+
+## Usage
+
+Database migrations and data seeding are applied automatically when the application starts, thanks to the `await app.MigrateDbAsync();` call in `Program.cs`.
+
+To run the application locally, use the following command in the project directory:
+
+```bash
+dotnet run
+```
