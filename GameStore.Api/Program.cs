@@ -9,6 +9,16 @@ builder.Configuration
 var connString = builder.Configuration.GetConnectionString("GameStore");
 builder.Services.AddSqlite<GameStoreContext>(connString);
 
+// Configure Kestrel to listen on the port provided by Render
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    var port = Environment.GetEnvironmentVariable("PORT");
+    if (!string.IsNullOrEmpty(port) && int.TryParse(port, out var portNumber))
+    {
+        serverOptions.ListenAnyIP(portNumber);
+    }
+});
+
 var app = builder.Build();
 
 app.MapGamesEndpoints();
