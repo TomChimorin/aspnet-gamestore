@@ -3,25 +3,20 @@ using GameStore.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Load optional secrets.json if you use it for config
 builder.Configuration
     .AddJsonFile("secrets.json", optional: true, reloadOnChange: true);
 
-// Get connection string
 var connString = builder.Configuration.GetConnectionString("GameStore");
 builder.Services.AddSqlite<GameStoreContext>(connString);
 
-// Get port from environment or default to 8080
-var portEnv = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-if (!int.TryParse(portEnv, out var port))
+// Configure Kestrel to listen on Render's port
+builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    port = 8080;
-}
-
-// Configure Kestrel to listen on the port Render provides
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(port);
+    var port = Environment.GetEnvironmentVariable("PORT");
+    if (!string.IsNullOrEmpty(port) && int.TryParse(port, out var portNumber))
+    {
+        serverOptions.ListenAnyIP(portNumber);
+    }
 });
 
 var app = builder.Build();
@@ -29,7 +24,15 @@ var app = builder.Build();
 app.MapGamesEndpoints();
 app.MapGenresEndpoints();
 
-// Apply EF migrations on startup
-await app.MigrateDbAsync();
+try
+{
+    await app.MigrateDbAsync();
+    Console.WriteLine("Database migration succeeded.");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Database migration failed: {ex.Message}");
+    throw; // or handle appropriately
+}
 
 app.Run();
