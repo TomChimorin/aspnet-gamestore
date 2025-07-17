@@ -6,31 +6,26 @@ var builder = WebApplication.CreateBuilder(args);
 // Load secrets if any
 builder.Configuration.AddJsonFile("secrets.json", optional: true, reloadOnChange: true);
 
-// Get connection string and add EF Core SQLite context
+// Add EF Core with SQLite
 var connString = builder.Configuration.GetConnectionString("GameStore");
 builder.Services.AddSqlite<GameStoreContext>(connString);
 
-// Configure Kestrel to listen on Render port (or fallback to 8080)
-builder.WebHost.ConfigureKestrel(options =>
+// Bind to PORT provided by Render
+builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    var portEnv = Environment.GetEnvironmentVariable("PORT");
-    if (int.TryParse(portEnv, out var port))
-    {
-        options.ListenAnyIP(port);
-    }
-    else
-    {
-        options.ListenAnyIP(8080); // fallback
-    }
+    var portStr = Environment.GetEnvironmentVariable("PORT");
+    var port = string.IsNullOrEmpty(portStr) ? 8080 : int.Parse(portStr);
+    serverOptions.ListenAnyIP(port);
 });
 
 var app = builder.Build();
 
-// Map endpoints
+// Register endpoints
 app.MapGamesEndpoints();
 app.MapGenresEndpoints();
 
-// Run migrations on startup
+// Apply EF migrations
 await app.MigrateDbAsync();
 
+// KEEP THE APP ALIVE
 app.Run();
