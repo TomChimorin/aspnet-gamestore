@@ -1,17 +1,22 @@
 # Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /app
+WORKDIR /src
 
-# Copy csproj and restore dependencies
-COPY *.csproj ./
-RUN dotnet restore
+# Copy the csproj and restore dependencies
+COPY GameStore.Api/*.csproj ./GameStore.Api/
+RUN dotnet restore GameStore.Api/GameStore.Api.csproj
 
-# Copy everything else and build
-COPY . ./
-RUN dotnet publish -c Release -o out
+# Copy all source files
+COPY . .
+
+# Publish the project
+RUN dotnet publish GameStore.Api/GameStore.Api.csproj -c Release -o /app/out
 
 # Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
-COPY --from=build /app/out ./
+
+# Copy the published output from the build stage
+COPY --from=build /app/out .
+
 ENTRYPOINT ["dotnet", "GameStore.Api.dll"]
